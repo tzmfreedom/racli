@@ -3,4 +3,7 @@
 require 'racli'
 Bundler.require
 
-Racli::CLI.new.call(ARGV)
+config_params, request_params = Racli::OptionParser.new.call(ARGV)
+
+cli = Racli::CLI.new(**config_params)
+cli.call(**request_params)

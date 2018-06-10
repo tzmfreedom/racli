@@ -21,12 +21,12 @@ Or install it yourself as:
 ## Usage
 
 put config.ru
-```
+```ruby
 run lambda { |env| [200, {}, ['hello']] }
 ```
 
 Run racl on directory where you put config.ru on
-```
+```bash
 racl
 ```
 

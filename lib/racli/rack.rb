@@ -1,6 +1,6 @@
 require 'rack/builder'
 
 module Racli
-  class Context < Rack::Builder
+  class Rack < Rack::Builder
   end
 end
