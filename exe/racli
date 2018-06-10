@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'racli'
+Bundler.require
+
+Racli::CLI.new.call(ARGV)
