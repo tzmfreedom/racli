@@ -29,9 +29,9 @@ module Racli
       end
     end
 
-    def add_handler(handler_klass, index = 0)
+    def add_handler(handler_klass)
       handler = handler_klass.new(self)
-      handlers.insert index, handler
+      handlers.push handler
     end
 
     private
