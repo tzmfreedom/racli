@@ -2,7 +2,7 @@ require 'racli/rack'
 require 'cgi'
 require 'json'
 
-Dir['./lib/racli/handlers/**/*.rb'].each { |f| require f }
+Dir[File.expand_path('./handlers/**/*.rb', __dir__)].each { |f| require f }
 
 module Racli
   class CLI
