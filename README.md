@@ -25,9 +25,28 @@ put config.ru
 run lambda { |env| [200, {}, ['hello']] }
 ```
 
-Run racl on directory where you put config.ru on
+Run racli on directory where you put config.ru.
 ```bash
-racl
+racli
+```
+
+By default, racli requests root path, that is '/', with GET method. 
+You can specify HTTP method and path.
+```bash
+racli {METHOD} {PATH} # ex) racli POST /users
+```
+
+The rack configuration file is `config.ru` on current directory by default.
+If you want to use other file as rack configuration file, you should specify `--config` option
+```bash
+racli --config /path/to/config_file
+```
+
+If you want to add rack response handler, you should put .raclirc on the same directory as config.ru is put.
+The following is sample .raclirc
+```ruby
+add_handler Racli::Handlers::RetryHandler
+# add_handler Racli::Handlers::DebugHandler
 ```
 
 ## Development
