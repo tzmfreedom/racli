@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'optparse'
 
 module Racli
@@ -7,7 +9,7 @@ module Racli
       config_params = { config: options[:config], rcfile: options[:rcfile] }
 
       params = { method: 'GET', path: '/' }
-      params[:method] = args[0] if args.length > 0
+      params[:method] = args[0] unless args.empty?
       params[:path] = args[1] if args.length > 1
 
       request_params = options.dup
@@ -22,8 +24,8 @@ module Racli
 
     def parse(args)
       keys = args.select { |key| key.include?('--') }
-               .map { |key| key.gsub(/^\-\-/, '') }
-               .reject { |key| ['config', 'rcfile'].include?(key) }
+                 .map { |key| key.gsub(/^\-\-/, '') }
+                 .reject { |key| %w[config rcfile].include?(key) }
       options = {}
       options[:config] = File.expand_path('./config.ru', Dir.pwd)
       options[:rcfile] = File.expand_path('./.raclirc', Dir.pwd)

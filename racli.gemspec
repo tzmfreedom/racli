@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'racli/version'
 
@@ -9,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['tzmfreedom']
   spec.email         = ['makoto_tajitsu@hotmail.co.jp']
 
-  spec.summary       = %q{CLI Backend with Rack}
-  spec.description   = %q{CLI Backend with Rack}
+  spec.summary       = 'CLI Backend with Rack'
+  spec.description   = 'CLI Backend with Rack'
   spec.homepage      = 'https://github.com/tzmfreedom/racli'
   spec.license       = 'MIT'
 
@@ -25,4 +26,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rubocop'
 end

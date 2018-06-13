@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'racli/rack'
 require 'cgi'
 require 'json'
@@ -8,13 +10,14 @@ module Racli
   class CLI
     def initialize(config:, rcfile:)
       config_ruby_string = File.read(config)
-      @rackapp = eval "::Racli::Rack.new { #{config_ruby_string} }.to_app", TOPLEVEL_BINDING, '(racli)', 0
+      eval_string = "::Racli::Rack.new { #{config_ruby_string} }.to_app"
+      @rackapp = TOPLEVEL_BINDING.eval eval_string, '(racli)', 0
       @default_handler = Racli::Handlers::DefaultHandler.new(self)
       @handlers = []
       @aliases = {}
       @default_headers = {}
 
-      eval(File.read(rcfile)) if File.exists?(rcfile)
+      eval(File.read(rcfile)) if File.exist?(rcfile)
     end
 
     def call(method:, path:, params:, headers: @default_headers)
@@ -25,16 +28,19 @@ module Racli
         headers.merge!(alias_setting[:headers])
       end
 
-      request_params = request_params(method: method, path: path, params: params, headers: headers)
+      request_params = request_params(
+        method: method,
+        path: path,
+        params: params,
+        headers: headers
+      )
       status, headers, body = @rackapp.call(request_params)
-
-      original_args = { method: method, path: path, params: params }
-      catch(:abort) do
-        response_handlers = @handlers + [@default_handler]
-        response_handlers.reduce([status, headers, body]) do |(status, headers, body), handler|
-          handler.call(status, headers, body, original_args)
-        end
-      end
+      handle_response(
+        status: status,
+        headers: headers,
+        body: body,
+        original_args: { method: method, path: path, params: params }
+      )
     end
 
     def add_handler(handler_klass)
@@ -52,11 +58,20 @@ module Racli
 
     private
 
+    def handle_response(status:, headers:, body:, original_args:)
+      catch(:abort) do
+        response_handlers = @handlers + [@default_handler]
+        response_handlers.each do |handler|
+          status, headers, body = handler.call(status, headers, body, original_args)
+        end
+      end
+    end
+
     def request_params(method:, path:, params:, headers:)
       query_string = to_query_string(params)
       request_params = {
         'PATH_INFO' => path || '/',
-        'REQUEST_METHOD' => method || 'GET',
+        'REQUEST_METHOD' => method || 'GET'
       }.merge(headers)
 
       if method == 'GET'

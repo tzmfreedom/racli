@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'racli/handlers/base'
 
 module Racli
@@ -14,7 +16,7 @@ module Racli
       end
 
       def call(status, headers, body, original_args)
-        if ((300...400) === status.to_i) && headers['Location']
+        if (300...400).cover?(status.to_i) && headers['Location']
           unless within_max_retry_count?
             STDERR.puts 'Too many redirection!'
             throw :abort

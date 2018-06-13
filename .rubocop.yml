@@ -1,0 +1,26 @@
+AllCops:
+  TargetRubyVersion: 2.5
+
+Lint/ShadowingOuterLocalVariable:
+  Exclude:
+    - 'lib/racli/cli.rb'
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/MethodLength:
+  Max: 30
+
+Security/Eval:
+  Exclude:
+    - 'lib/racli/cli.rb'
+
+Style/Documentation:
+  Enabled: false
+
+Style/TrivialAccessors:
+  Exclude:
+    - 'lib/racli/cli.rb'
+
+Metrics/LineLength:
+  Max: 100

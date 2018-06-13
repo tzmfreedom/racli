@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'racli/handlers/base'
 
 module Racli
   module Handlers
     class DebugHandler < Base
-      def call(status, headers, body, original_args)
+      def call(status, headers, body, _original_args)
         puts '*** debug ***'
         puts status
         puts headers
