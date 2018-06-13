@@ -17,14 +17,15 @@ module Racli
       eval(File.read(rcfile)) if File.exists?(rcfile)
     end
 
-    def call(method:, path:, params:)
+    def call(method:, path:, params:, headers: @default_headers)
       if @aliases.include?(method.to_sym)
         alias_setting = @aliases[method.to_sym]
         method = alias_setting[:method]
         path = alias_setting[:path]
+        headers.merge!(alias_setting[:headers])
       end
 
-      request_params = request_params(method: method, path: path, params: params)
+      request_params = request_params(method: method, path: path, params: params, headers: headers)
       status, headers, body = @rackapp.call(request_params)
 
       original_args = { method: method, path: path, params: params }
@@ -41,8 +42,8 @@ module Racli
       @handlers.push handler
     end
 
-    def add_alias(alias_name, method = 'GET', path = '/')
-      @aliases[alias_name] = { method: method, path: path }
+    def add_alias(alias_name, method = 'GET', path = '/', headers = {})
+      @aliases[alias_name] = { method: method, path: path, headers: headers }
     end
 
     def default_headers(headers)
@@ -51,12 +52,12 @@ module Racli
 
     private
 
-    def request_params(method:, path:, params:)
+    def request_params(method:, path:, params:, headers:)
       query_string = to_query_string(params)
       request_params = {
         'PATH_INFO' => path || '/',
         'REQUEST_METHOD' => method || 'GET',
-      }.merge!(@default_headers)
+      }.merge(headers)
 
       if method == 'GET'
         request_params['QUERY_STRING'] = query_string
